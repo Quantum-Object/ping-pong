@@ -13,8 +13,8 @@ Color blue={0, 103, 105,255};
 Color gray={183,183,183,250};
 Color red={237, 198, 177,250};
 Color yellow={230, 255, 148,250};
-int score1 = 9;
-int score2 = 9;
+int score1 = 0;
+int score2 = 0;
 
 class Ball {
 public:
@@ -65,7 +65,7 @@ public:
     int l = GetScreenHeight() / 10;
 
     void Draw() {
-        DrawRectangle(GetScreenWidth() * 98 / 100, v - l, 2 * GetScreenWidth() / 100, 2 * l, blue);
+        DrawRectangleRounded({(float)GetScreenWidth() * 98 / 100, (float)v - l, (float)2 * GetScreenWidth() / 100, (float)2 * l},10,5,blue);
     }
 
     void Move() {
@@ -87,8 +87,8 @@ public:
     int l = GetScreenHeight() / 10;
 
     void Draw() {
-        DrawRectangle(0, v - l, 2 * GetScreenWidth() / 100, 2 * l, blue);
-    }
+        DrawRectangleRounded({(float)0,(float) v - l, (float)2 * GetScreenWidth() / 100, (float)2 * l},10,5,blue);
+            }
 
     void Move(Vector2 s) {
         if (v - l <= 0) {
@@ -103,7 +103,7 @@ public:
 };
 
 int main() {
-    InitWindow(1000, 600, "AI Will Win");
+    InitWindow(1200, 700, "AI Will Win");
     SetTargetFPS(90);
 
     Ball b(20, {7, 6});
