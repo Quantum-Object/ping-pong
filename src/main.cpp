@@ -6,6 +6,8 @@
 
 using namespace std;
 
+
+
 Color white = {255, 255, 255, 250};
 Color green={157, 222, 139,250};
 Color dgreen={64, 165, 120,250};
@@ -103,6 +105,8 @@ public:
 };
 
 int main() {
+    InitAudioDevice(); 
+    Sound pong=LoadSound("/Users/quantumobject/Desktop/Audio/click_002.ogg");
     InitWindow(1200, 700, "AI Will Win");
     SetTargetFPS(90);
 
@@ -124,6 +128,7 @@ int main() {
             
             if (CheckCollisionPointRec(GetMousePosition(),rec)){
                 DrawRectangleRounded(rec,10,100,green);
+                PlaySound(pong);
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                     scene2=false;
                     score1=0;
@@ -155,11 +160,15 @@ int main() {
         DrawText(TextFormat("Score: %01i", score2), GetScreenWidth() / 5, GetScreenHeight() / 20, 20, red);
         DrawText(TextFormat("Score: %01i", score1), 3 * GetScreenWidth() / 5, GetScreenHeight() / 20, 20, red);
 
-        if (CheckCollisionCircleRec({b.x, b.y}, b.r, {(float)(GetScreenWidth() * 98 / 100), (float)(rac.v - rac.l), (float)(2 * GetScreenWidth() / 100), (float)(2 * rac.l)}))
+        if (CheckCollisionCircleRec({b.x, b.y}, b.r, {(float)(GetScreenWidth() * 98 / 100), (float)(rac.v - rac.l), (float)(2 * GetScreenWidth() / 100), (float)(2 * rac.l)})){
             b.speed.x *= -1;
+            PlaySound(pong);
+        }
 
-        if (CheckCollisionCircleRec({b.x, b.y}, b.r, {(float)(GetScreenWidth() * 2 / 100), (float)(ai.v - ai.l), (float)(2 * GetScreenWidth() / 100), (float)(2 * ai.l)}))
+        if (CheckCollisionCircleRec({b.x, b.y}, b.r, {(float)(GetScreenWidth() * 2 / 100), (float)(ai.v - ai.l), (float)(2 * GetScreenWidth() / 100), (float)(2 * ai.l)})){
             b.speed.x *= -1;
+            PlaySound(pong);
+        }
 
        
         
