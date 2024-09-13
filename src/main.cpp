@@ -7,7 +7,6 @@
 using namespace std;
 
 
-
 Color white = {255, 255, 255, 250};
 Color green={157, 222, 139,250};
 Color dgreen={64, 165, 120,250};
@@ -25,6 +24,7 @@ public:
     int r;
 
     Ball(int rad, Vector2 s) : r(rad), speed(s) {
+    
         x = (GetScreenWidth() - 1) / 2;
         y = (GetScreenHeight() - 1) / 2;
     }
@@ -48,16 +48,18 @@ public:
     }
 
     void Reset() {
-        x = (GetScreenWidth() - 1) / 2;
+       
+    x = (GetScreenWidth() - 1) / 2;
         y = (GetScreenHeight() - 1) / 2;
         speed = Vector2Scale(speed, -1);
+        
     }
 };
 
 void UpdateScore(int x, int r) {
     if (x - r <= 0)
         score1++;
-    if (x + r >= GetScreenWidth())
+    else if (x + r >= GetScreenWidth())
         score2++;
 }
 
@@ -65,10 +67,9 @@ class Racket {
 public:
     int v = GetScreenHeight() / 2;
     int l = GetScreenHeight() / 10;
-
-    void Draw() {
-        DrawRectangleRounded({(float)GetScreenWidth() * 98 / 100, (float)v - l, (float)2 * GetScreenWidth() / 100, (float)2 * l},10,5,blue);
-    }
+    void Draw(){
+      DrawRectangleRounded({(float)(GetScreenWidth() * 98 / 100), (float)(v - l), (float)(2 * GetScreenWidth() / 100), (float)(2 * l)},10,5,blue);
+            }
 
     void Move() {
         if (v - l <= 0) {
@@ -89,7 +90,7 @@ public:
     int l = GetScreenHeight() / 10;
 
     void Draw() {
-        DrawRectangleRounded({(float)0,(float) v - l, (float)2 * GetScreenWidth() / 100, (float)2 * l},10,5,blue);
+        DrawRectangleRounded({0, (float)(v - l), (float)(2 * GetScreenWidth() / 100), (float)(2 * l)},10,5,blue);
             }
 
     void Move(Vector2 s) {
@@ -107,6 +108,12 @@ public:
 int main() {
     InitAudioDevice(); 
     Sound pong=LoadSound("/Users/quantumobject/Desktop/Audio/click_002.ogg");
+    Sound ping=LoadSound("/Users/quantumobject/Desktop/Audio/click_003.ogg");
+    
+
+    
+    int t=0;
+
     InitWindow(1200, 700, "AI Will Win");
     SetTargetFPS(90);
 
@@ -114,11 +121,36 @@ int main() {
     Racket rac;
     AI ai;
     bool scene2=false;
+    bool start=true;
 
     while (!WindowShouldClose()) {
+        t++;
         BeginDrawing();
         scene2=(score1 == 10 || score2 == 10);
-        if (scene2){
+        if (start){
+            ClearBackground(yellow);
+            Font f=LoadFont("/Users/quantumobject/Desktop/Crackman.otf");
+            DrawTextPro(f,"   BING BONG!!",{(float)GetScreenWidth()/7,(float)GetScreenHeight()/3},{10,10},0,100,10,BLACK);
+            //DrawText("   BING BONG!!",GetScreenWidth()/7,GetScreenHeight()/3,100,blue);
+            int w=120;
+            Rectangle rec={(float) GetScreenWidth()/2-w,(float)GetScreenHeight()*6/10,(float)2*w,(float)w*2/3};
+            
+            //DrawRectangle(GetScreenWidth()/2-w,GetScreenHeight()*6/10,2*w,w*2/3,RED);
+            
+            if (CheckCollisionPointRec(GetMousePosition(),rec)){
+                DrawRectangleRounded(rec,10,100,green);
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    start=false;
+                }
+                    
+            }
+            else {
+                DrawRectangleRounded(rec,10,100,dgreen);
+            }
+            DrawText("   Play ",GetScreenWidth()/2-w+16,GetScreenHeight()*6.3/10,40,BLACK);
+
+        }
+        else if (scene2){
             ClearBackground(gray);
             DrawText((score2==10?"AI WINS":"YOU WIN"),GetScreenWidth()*2/7,GetScreenHeight()/3,100,blue);
             int w=120;
@@ -128,7 +160,6 @@ int main() {
             
             if (CheckCollisionPointRec(GetMousePosition(),rec)){
                 DrawRectangleRounded(rec,10,100,green);
-                PlaySound(pong);
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                     scene2=false;
                     score1=0;
@@ -142,11 +173,13 @@ int main() {
             DrawText("Play Again",GetScreenWidth()/2-w+16,GetScreenHeight()*6.3/10,40,BLACK);
 
         }else {
+        
 
         ClearBackground(dgreen);
 
         DrawRectangle((GetScreenWidth() - 10) / 2, 0, 10, GetScreenHeight(), green);
         DrawCircle((GetScreenWidth()) / 2, GetScreenHeight() / 2, 50,green);
+
 
         b.Draw();
         b.Update();
@@ -162,15 +195,20 @@ int main() {
 
         if (CheckCollisionCircleRec({b.x, b.y}, b.r, {(float)(GetScreenWidth() * 98 / 100), (float)(rac.v - rac.l), (float)(2 * GetScreenWidth() / 100), (float)(2 * rac.l)})){
             b.speed.x *= -1;
+            b.x-=3;
             PlaySound(pong);
         }
 
-        if (CheckCollisionCircleRec({b.x, b.y}, b.r, {(float)(GetScreenWidth() * 2 / 100), (float)(ai.v - ai.l), (float)(2 * GetScreenWidth() / 100), (float)(2 * ai.l)})){
+        if (CheckCollisionCircleRec({b.x, b.y}, b.r, {0, (float)(ai.v - ai.l), (float)(2 * GetScreenWidth() / 100), (float)(2 * ai.l)})){
             b.speed.x *= -1;
-            PlaySound(pong);
+            PlaySound(ping);
+            b.x+=3;
+            
         }
 
-       
+
+      
+
         
         }
         
